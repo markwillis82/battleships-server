@@ -7,11 +7,7 @@ var innerServer = require('./lib/server'),
 innerServer.start(function(err) {
 	if(err) throw err;
 	var server = dnode({
-		startGame : function (userId, cb) {
-			console.log('game started:', userId);
-			cb('game1');
-		}
-	});
-
-	server.listen(5004);
+		startGame : innerServer.startGame,
+		nextMove : innerServer.startGame
+	}).listen(5004);
 });
