@@ -8,6 +8,6 @@ innerServer.start(function(err) {
 	if(err) throw err;
 	var server = dnode({
 		startGame : innerServer.startGame,
-		nextMove : innerServer.startGame
+		nextMove : innerServer.nextMove
 	}).listen(5004);
 });
