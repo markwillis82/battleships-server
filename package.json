@@ -1,0 +1,20 @@
+{
+  "name": "server",
+  "version": "0.0.0",
+  "description": "ERROR: No README.md file found!",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/markwillis82/battleships-server.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "gitHead": "dab8e9e1852bbf0ebde3ead1ef404ac1b1a12ab1",
+  "dependencies": {
+    "dnode": "~1.0.5"
+  }
+}
