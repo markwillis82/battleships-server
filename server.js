@@ -13,47 +13,35 @@ var innerServer = require('./lib/server'),
 // any initial startup
 innerServer.start(function(err) {
 
-  server.listen(port);
+  server.listen(port); // setup tcp server
+
   server.once('listening', function() {
     console.log('Server listening on port %d', port);
   });
 
 
   server.on('connection', function(stream) {
-    stream.id =  randomstring.generate();
-    var peer = duplexEmitter(stream);
-    console.log('Stream Started:', stream.id);
+    stream.id =  randomstring.generate(); // generate a unique ID for stream
+    var peer = duplexEmitter(stream); // setup duplex
 
-    // var interval =
-    // setInterval(function() {
-    //   peer.emit('ping', Date.now());
-    // }, 1000);
+    console.log('Stream Started:', stream.id); // good to go
+
     peer.on('startGame', function(userObj) {
-      userObj.streamId = stream.id;
+      userObj.streamId = stream.id; // on startGame tie stream to user
       innerServer.initUser(userObj, peer);
     });
+
     peer.on('nextMove',innerServer.nextMove);
 
-    // stream.on('close', function() {
-    //   console.log('peer closed');
-    // });
-
-    stream.on('end', function() {
+    stream.on('end', function() { // delete the stream from the store when the connection drops
       console.log('peer ended', stream.id);
       innerServer.stopUserByStreamId(stream.id);
     });
 
-    stream.on('error', function(err) {
+    stream.on('error', function(err) { // there was a problem
       console.log('peer died', err);
       innerServer.stopUserByStreamId(stream.id);
     });
-  });
-
-  server.on('end', function(stream) {
-    console.log('byue', stream);
-  });
-  server.on('close', function(stream) {
-    console.log('byue', stream);
   });
 
 });
