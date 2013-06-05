@@ -1,40 +1,54 @@
 // initialise server with available protocols
 
 var innerServer = require('./lib/server'),
-	dnode = require('dnode');
+	dnode = require('dnode'),
+  randomstring = require("randomstring");
 
-// // any initial startup
-// innerServer.start(function(err) {
-// 	if(err) throw err;
-// 	var server = dnode({
-// 		startGame : innerServer.startGame,
-// 		nextMove : innerServer.nextMove
-// 	}).listen(5004);
-// });
+  var net = require('net'),
+    duplexEmitter = require('duplex-emitter'),
+    server = net.createServer(),
+    port = 20000;
 
-var net = require('net');
-var server = net.createServer();
-var port = 20000;
-server.listen(port);
-server.once('listening', function() {
-  console.log('Server listening on port %d', port);
-});
 
-var duplexEmitter = require('duplex-emitter');
+// any initial startup
+innerServer.start(function(err) {
 
-server.on('connection', function(stream) {
-  var peer = duplexEmitter(stream);
-
-  // var interval =
-  // setInterval(function() {
-  //   peer.emit('ping', Date.now());
-  // }, 1000);
-  peer.on('startGame', function(userObj) {
-	innerServer.startGame(userObj, peer);
+  server.listen(port);
+  server.once('listening', function() {
+    console.log('Server listening on port %d', port);
   });
-  peer.on('nextMove',innerServer.nextMove);
-});
 
-server.on('disconnect', function(stream) {
-	console.log('byue', stream);
+
+  server.on('connection', function(stream) {
+    stream.id =  randomstring.generate();
+    var peer = duplexEmitter(stream);
+    console.log('Stream Started:', stream.id);
+
+    // var interval =
+    // setInterval(function() {
+    //   peer.emit('ping', Date.now());
+    // }, 1000);
+    peer.on('startGame', function(userObj) {
+      userObj.streamId = stream.id;
+      innerServer.startGame(userObj, peer);
+    });
+    peer.on('nextMove',innerServer.nextMove);
+
+    // stream.on('close', function() {
+    //   console.log('peer closed');
+    // });
+
+    stream.on('end', function() {
+      console.log('peer ended', stream.id);
+      innerServer.stopUserByStreamId(stream.id);
+    });
+  });
+
+  server.on('end', function(stream) {
+    console.log('byue', stream);
+  });
+  server.on('close', function(stream) {
+    console.log('byue', stream);
+  });
+
 });
