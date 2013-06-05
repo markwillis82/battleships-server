@@ -30,7 +30,7 @@ innerServer.start(function(err) {
     // }, 1000);
     peer.on('startGame', function(userObj) {
       userObj.streamId = stream.id;
-      innerServer.startGame(userObj, peer);
+      innerServer.initUser(userObj, peer);
     });
     peer.on('nextMove',innerServer.nextMove);
 
@@ -40,6 +40,10 @@ innerServer.start(function(err) {
 
     stream.on('end', function() {
       console.log('peer ended', stream.id);
+      innerServer.stopUserByStreamId(stream.id);
+    });
+    stream.on('error', function(err) {
+      console.log('peer died', err);
       innerServer.stopUserByStreamId(stream.id);
     });
   });

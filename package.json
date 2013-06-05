@@ -19,6 +19,7 @@
     "duplex-emitter": "~0.1.10",
     "reconnect": "~1.3.1",
     "randomstring": "~1.0.2",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "mongoose": "~3.6.11"
   }
 }
