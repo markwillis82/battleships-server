@@ -42,6 +42,7 @@ innerServer.start(function(err) {
       console.log('peer ended', stream.id);
       innerServer.stopUserByStreamId(stream.id);
     });
+
     stream.on('error', function(err) {
       console.log('peer died', err);
       innerServer.stopUserByStreamId(stream.id);
